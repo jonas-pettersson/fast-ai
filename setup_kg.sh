@@ -17,12 +17,11 @@
 #    DESCRIPTION: moves [sample-size] number of random files from
 #                           [source-dir] to [target-dir]
 function mv_rand {
-    echo Moving data from $1 to $3
+    echo Moving $2 files from $1 to $3
     for i in $(seq 1 $2)
     do
         RANGE=`ls $1 | wc -l`
-        rand_idx=$RANDOM
-        let "rand_idx %= $RANGE"
+        rand_idx=$(( ($RANDOM % RANGE) + 1 ))
         mv -i `echo $1$(ls $1 | head -$rand_idx | tail -1)` $3
         echo -ne $i'\r'
     done
@@ -33,10 +32,11 @@ function mv_rand {
 #    DESCRIPTION: copies [sample-size] number of random files from
 #                           [source-dir] to [target-dir]
 function cp_rand {
-    echo Copying data from $1 to $3
+    echo Copying $2 files from $1 to $3
     for i in $(seq 1 $2)
     do
-        rand_idx=`echo "(($(ls $1 | wc -l) * $(python -c "import random; print(random.random())") / 1))" | bc`
+        RANGE=`ls $1 | wc -l`
+        rand_idx=$(( ($RANDOM % RANGE) + 1 ))
         cp `echo $1$(ls $1 | head -$rand_idx | tail -1)` $3
         echo -ne $i'\r'
     done
@@ -86,15 +86,19 @@ else
 fi
 
 # get files from Kaggle (see https://github.com/floydwch/kaggle-cli)
+echo Downloading ...
 kg download
+# cp /home/ubuntu/nbs/data/dogs-cats-redux-data/*.zip .
 
 # unzip into test / train directories and delete zip-files
+echo Unzipping ...
 unzip -q test.zip
 unzip -q train.zip
-rm test.zip
-rm train.zip
+rm -v test.zip
+rm -v train.zip
 
 # create directory structure
+echo Creating directory structure ...
 mkdir -v valid
 mkdir -v valid/cats
 mkdir -v valid/dogs
@@ -122,8 +126,8 @@ mv_rand train/dogs/ $validSz valid/dogs/
 cp_rand train/cats/ $sampleSz sample/train/cats/
 cp_rand train/dogs/ $sampleSz sample/train/dogs/
 
-cp_rand train/cats/ $sampleSz sample/valid/cats/
-cp_rand train/dogs/ $sampleSz sample/valid/dogs/
+cp_rand valid/cats/ $sampleSz sample/valid/cats/
+cp_rand valid/dogs/ $sampleSz sample/valid/dogs/
 
 # print results
 echo "train/cats/:" `ls train/cats/ | wc -l`
