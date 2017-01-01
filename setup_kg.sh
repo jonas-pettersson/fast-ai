@@ -6,7 +6,7 @@
 #    USAGE:  ./setup_kg.sh [validation-size] [sample-size]
 #
 #    DESCRIPTION: downloads kaggle files, extracts zip-files,
-#                            creates directories, and moves files
+#                 creates directories, and moves files
 #
 #    AUTHOR:  Jonas Pettersson, j.g.f.pettersson@gmail.com
 #    CREATED:  31/12/2016
@@ -17,13 +17,13 @@
 #    DESCRIPTION: moves [sample-size] number of random files from
 #                           [source-dir] to [target-dir]
 function mv_rand {
+    echo Moving data from $1 to $3
     for i in $(seq 1 $2)
     do
         RANGE=`ls $1 | wc -l`
         rand_idx=$RANDOM
         let "rand_idx %= $RANGE"
         mv -i `echo $1$(ls $1 | head -$rand_idx | tail -1)` $3
-        echo Moving data from $1 to $3
         echo -ne $i'\r'
     done
     echo -ne '\n'
@@ -33,11 +33,11 @@ function mv_rand {
 #    DESCRIPTION: copies [sample-size] number of random files from
 #                           [source-dir] to [target-dir]
 function cp_rand {
+    echo Copying data from $1 to $3
     for i in $(seq 1 $2)
     do
         rand_idx=`echo "(($(ls $1 | wc -l) * $(python -c "import random; print(random.random())") / 1))" | bc`
         cp `echo $1$(ls $1 | head -$rand_idx | tail -1)` $3
-        echo Copying data from $1 to $3
         echo -ne $i'\r'
     done
     echo -ne '\n'
