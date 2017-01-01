@@ -1,5 +1,5 @@
 # fast-ai
-https://course.fast.ai
+http://course.fast.ai
 
 ___setup_kg.sh___
 
