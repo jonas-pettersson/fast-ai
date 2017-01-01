@@ -19,9 +19,14 @@
 function mv_rand {
     for i in $(seq 1 $2)
     do
-        rand_idx=`echo "(($(ls $1 | wc -l) * $(python -c "import random; print(random.random())") / 1))" | bc`
-        mv -iv `echo $1$(ls $1 | head -$rand_idx | tail -1)` $3
+        RANGE=`ls $1 | wc -l`
+        rand_idx=$RANDOM
+        let "rand_idx %= $RANGE"
+        mv -i `echo $1$(ls $1 | head -$rand_idx | tail -1)` $3
+        echo Moving data from $1 to $3
+        echo -ne $i'\r'
     done
+    echo -ne '\n'
 }
 
 #    FUNCTION:  cp_rand [source-dir] [sample-size] [target-dir]
@@ -31,8 +36,11 @@ function cp_rand {
     for i in $(seq 1 $2)
     do
         rand_idx=`echo "(($(ls $1 | wc -l) * $(python -c "import random; print(random.random())") / 1))" | bc`
-        cp -v `echo $1$(ls $1 | head -$rand_idx | tail -1)` $3
+        cp `echo $1$(ls $1 | head -$rand_idx | tail -1)` $3
+        echo Copying data from $1 to $3
+        echo -ne $i'\r'
     done
+    echo -ne '\n'
 }
 
 set -e
