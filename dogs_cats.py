@@ -25,4 +25,6 @@ im[:,:,2] -= 123.68
 im = im.transpose((2,0,1))
 im = np.expand_dims(im, axis=0)
 
-print vgg.predict(im, True)[2][0]
+answer = vgg.predict(im, True)
+print answer[2][0]
+print answer[0][0]
