@@ -29,7 +29,7 @@ class Vgg16():
 
 
     def __init__(self):
-        self.FILE_PATH = 'file:/home/ubuntu/nbs/data/dogs-cats-redux/models/'
+        self.FILE_PATH = 'file:/home/jonas/dogs-cats-redux/models/'
         self.create()
         self.get_classes()
 
