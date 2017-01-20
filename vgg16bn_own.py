@@ -24,19 +24,19 @@ def vgg_preprocess(x):
     return x[:, ::-1] # reverse axis rgb->bgr
 
 
-class Vgg16():
-    """The VGG 16 Imagenet model"""
+class Vgg16BN():
+    """The VGG 16 Imagenet model with Batch Normalization for the Dense Layers"""
 
 
-    def __init__(self):
-        self.FILE_PATH = 'file:./'
-        self.create()
+    def __init__(self, size=(224,224), include_top=True):
+        self.FILE_PATH = 'http://www.platform.ai/models/'
+        self.create(size, include_top)
         self.get_classes()
 
 
     def get_classes(self):
-        fname = 'cats_dogs_class_index.json'
-        fpath = get_file(fname, self.FILE_PATH+fname, cache_subdir='')
+        fname = 'imagenet_class_index.json'
+        fpath = get_file(fname, self.FILE_PATH+fname, cache_subdir='models')
         with open(fpath) as f:
             class_dict = json.load(f)
         self.classes = [class_dict[str(i)][1] for i in range(len(class_dict))]
@@ -60,12 +60,16 @@ class Vgg16():
     def FCBlock(self):
         model = self.model
         model.add(Dense(4096, activation='relu'))
+        model.add(BatchNormalization())
         model.add(Dropout(0.5))
 
 
-    def create(self):
+    def create(self, size, include_top):
+        if size != (224,224):
+            include_top=False
+
         model = self.model = Sequential()
-        model.add(Lambda(vgg_preprocess, input_shape=(3,224,224)))
+        model.add(Lambda(vgg_preprocess, input_shape=(3,)+size))
 
         self.ConvBlock(2, 64)
         self.ConvBlock(2, 128)
@@ -73,13 +77,18 @@ class Vgg16():
         self.ConvBlock(3, 512)
         self.ConvBlock(3, 512)
 
+        if not include_top:
+            fname = 'vgg16_bn_conv.h5'
+            model.load_weights(get_file(fname, self.FILE_PATH+fname, cache_subdir='models'))
+            return
+
         model.add(Flatten())
         self.FCBlock()
         self.FCBlock()
         model.add(Dense(1000, activation='softmax'))
 
-        fname = 'dogs-cats-redux-model.h5'
-        model.load_weights(get_file(fname, self.FILE_PATH+fname, cache_subdir=''))
+        fname = 'vgg16_bn.h5'
+        model.load_weights(get_file(fname, self.FILE_PATH+fname, cache_subdir='models'))
 
 
     def get_batches(self, path, gen=image.ImageDataGenerator(), shuffle=True, batch_size=8, class_mode='categorical'):
