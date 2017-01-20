@@ -18,4 +18,4 @@ else
     imgFile=$1
 fi
 
-python dogs_cats.py $imgFile
+~/anaconda2/bin/python dogs_cats.py $imgFile

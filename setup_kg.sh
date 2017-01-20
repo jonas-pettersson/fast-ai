@@ -86,16 +86,24 @@ else
 fi
 
 # get files from Kaggle (see https://github.com/floydwch/kaggle-cli)
-echo Downloading ...
-kg download
+read -n1 -p "Download from kaggle? [y,n]" doit
+case $doit in
+    y|Y)
+	echo
+	echo Downloading...
+	kg download
+	;;
+    n|N) echo ;;
+    *) echo ;;
+esac
 # cp /home/ubuntu/nbs/data/dogs-cats-redux-data/*.zip .
 
 # unzip into test / train directories and delete zip-files
 echo Unzipping ...
 unzip -q test.zip
 unzip -q train.zip
-rm -v test.zip
-rm -v train.zip
+rm -vi test.zip
+rm -vi train.zip
 
 # create directory structure
 echo Creating directory structure ...
