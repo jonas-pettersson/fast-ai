@@ -105,6 +105,10 @@ unzip -q train.zip
 rm -vi test.zip
 rm -vi train.zip
 
+# move all test pics into a subdirectory
+mkdir test/unknown
+mv test/*.jpg test/unknown/
+
 # create directory structure
 echo Creating directory structure ...
 mkdir -v valid
