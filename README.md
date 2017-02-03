@@ -61,18 +61,15 @@ _on aws-instance:_
 `git clone https://github.com/jonas-pettersson/fast-ai`  
 (this is a forked copy of https://github.com/fastai/courses/ including own work)  
 
-```
-./fast-ai/install-gpu.sh
-sudo apt install python-pip
-```
-(pip is not installed by the script)  
+`./fast-ai/scripts/install-gpu.sh`  
 
 ```
+sudo apt install python-pip
 pip install --upgrade cliff
 pip install kaggle-cli
 sudo apt-get install unzip
 ```
-(unzip is not installed by the script)  
+(pip / unzip is not installed by the script. cliff needed for kaggle-cli)  
 
 `pip install backports.shutil_get_terminal_size`  
 (otherwise jupyter notebook does not work properly)  
@@ -97,7 +94,7 @@ kg config -g -u "your_kaggle_username" -p "your_kaggle_password" -c "your_kaggle
 ```
 ```
 cd ~/fast-ai/data/dogs-cats-redux
-~/fast-ai/setup_kg.sh
+~/fast-ai/scripts/setup_kg.sh
 ```
 (this is a setup script for kaggle, setting up directories, creating  
 validation set, sample sets etc:  
