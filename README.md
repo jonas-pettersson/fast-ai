@@ -4,10 +4,12 @@ http://course.fast.ai
 ## Process to setup spot instance for the course (p2.xlarge)
 
 **1) Request Spot Instance**
+
 AWS Console -> (Login) -> EC2 Dashboard -> Spot Requests
 "Request Spot Instances"
 
 (only changed parameters shown - leave rest as default)
+
 Request type: Request
 AMI: Ubuntu Server 16.04 LTS (HVM)
 Instance type: p2.xlarge (delete c3.,...)
@@ -35,6 +37,7 @@ Port Range: 8888-8898
 Source: 0.0.0.0/0
 
 **2) Configure SSH**
+
 _in cygwin:_
 `cd ~/.ssh
 emacs config`
@@ -46,11 +49,13 @@ _User ubuntu_
 _IdentityFile "~/.ssh/aws-key.pem"_
 
 **3) Login**
+
 _in cygwin:_
 `cd
 ssh aws-p2`
 
 **4) Setup AWS Instance**
+
 _on aws-instance:_
 `git clone https://github.com/jonas-pettersson/fast-ai-courses`
  (this is my forked copy of https://github.com/fastai/courses/ including my own work)
@@ -67,6 +72,7 @@ _on aws-instance:_
 (otherwise jupyter notebook does not work properly)
 
 **5) Setup for Kaggle Competition**
+
 _on aws-instance:_
 `cd
 cd fast-ai
@@ -88,17 +94,20 @@ validation set, samle sets etc:
  https://github.com/jonas-pettersson/fast-ai/blob/master/setup_kg.sh)
 
 **6) Transfer Files**
+
 you need to transfer the files you need from your local machine using rsync, e.g.
 _in cygwin:_
 `rsync -avp --progress dogs-cats-redux-model.h5 aws-p2:~/fast-ai/data/dogs-cats-redux/models`
 This takes some time unfortunately and is kind of a drawback of the spot-instance approach. Best is to consider carefully what you really need.
 
 **7) Start Working**
+
 _on aws-instance:_
 `cd fast-ai
 jupyter notebook`
 
 **8) Save Results**
+
 After you're done you would like to transfer your models back:
 _in cygwin:_
 `rsync -avp --progress aws-p2:~/dogs-cats-redux/models/dogs-cats-redux-model.h5 .`
@@ -109,9 +118,11 @@ git commit -m "..."
 git push origin master`
 
 **9) Terminate Instance**
+
 Make sure you saved everything you need
 AWS Console -> (Login) -> EC2 Dashboard -> Spot Requests -> Actions -> cancel spot request + check box "Terminate instances"
 Check in EC2 Dashboard -> Instances that your instance is terminated
+
 
 ## ___setup_kg.sh___
 
