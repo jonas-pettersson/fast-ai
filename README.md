@@ -1,68 +1,43 @@
-# fast-ai
-http://course.fast.ai
+# fast-ai  
+http://course.fast.ai  
 
-## Process to setup spot instance for the course (p2.xlarge)
+## Process to setup spot instance for the course (p2.xlarge)  
 
-**1) Request Spot Instance**
-
+**1) Request Spot Instance**  
 AWS Console -> (Login) -> EC2 Dashboard -> Spot Requests
-"Request Spot Instances"
+"Request Spot Instances"  
+(only changed parameters shown - leave rest as default)  
 
-(only changed parameters shown - leave rest as default)
+Request type: Request  
+AMI: Ubuntu Server 16.04 LTS (HVM)  
+Instance type: p2.xlarge (delete c3.,...)  
+Set your max price: e.g. 0.3  
+(Next)  
 
-Request type: Request
+Instance store: attach at launch  
+EBS volumes / Size: 32 GiB  
+Security groups: default  
+(Next / Review)  
 
-AMI: Ubuntu Server 16.04 LTS (HVM)
+You may need to change the security group settings if you cannot login to your instance:  
+AWS Console -> (Login) -> EC2 Dashboard -> Instances  
+Select instance -> Security Groups -> "default" (or which ever you are using)  
+Tab "Inbound" -> Edit  
 
-Instance type: p2.xlarge (delete c3.,...)
+Type: SSH  
+Protocol: TCP  
+Port Range: 22  
+Source: 0.0.0.0/0  
 
-Set your max price: e.g. 0.3
+Type: TCP  
+Protocol: TCP  
+Port Range: 8888-8898  
+Source: 0.0.0.0/0  
 
-(Next)
-
-
-Instance store: attach at launch
-
-EBS volumes / Size: 32 GiB
-
-Security groups: default
-
-(Next / Review)
-
-
-You may need to change the security group settings if you cannot login to your instance:
-
-AWS Console -> (Login) -> EC2 Dashboard -> Instances
-
-Select instance -> Security Groups -> "default" (or which ever you are using)
-
-Tab "Inbound" -> Edit
-
-
-Type: SSH
-
-Protocol: TCP
-
-Port Range: 22
-
-Source: 0.0.0.0/0
-
-
-Type: TCP
-
-Protocol: TCP
-
-Port Range: 8888-8898
-
-Source: 0.0.0.0/0
-
-**2) Configure SSH**
-
-_in cygwin:_
-
-`cd ~/.ssh`
-
-`emacs config`
+**2) Configure SSH**  
+_in cygwin:_  
+```cd ~/.ssh 
+emacs config``` 
 
 copy / paste the HostName (Public DNS) of your AWS instance
 
