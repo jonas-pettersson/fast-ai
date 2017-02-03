@@ -124,7 +124,7 @@ jupyter notebook
 **8) Save Results**  
 After work is done transfer the model(s) back with rsync:  
 _in cygwin:_  
-`rsync -avp --progress aws-p2:~/dogs-cats-redux/models/dogs-cats-redux-model.h5 .`  
+`rsync -avp --progress aws-p2:~/fast-ai/data/dogs-cats-redux/models/dogs-cats-redux-model.h5 .`  
 May also want to save notebooks / scripts etc. to GitHub  
 _on aws-instance:_  
 ```
