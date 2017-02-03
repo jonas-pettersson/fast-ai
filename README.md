@@ -63,7 +63,8 @@ _on aws-instance:_
 
 `sudo apt install python-pip`
  (pip is not installed by the script)
-`pip install kaggle-cli`
+`pip install --upgrade cliff
+pip install kaggle-cli`
 
 `sudo apt-get install unzip`
  (unzip is not installed by the script)
