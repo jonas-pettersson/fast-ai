@@ -2,6 +2,7 @@
 http://course.fast.ai  
 
 ## Process to setup spot instance for the course (p2.xlarge)  
+TODO Should be compiled into one script (T.B.D)  
 
 **1) Request Spot Instance**  
 AWS Console -> (Login) -> EC2 Dashboard -> Spot Requests
@@ -73,6 +74,13 @@ sudo apt-get install unzip
 
 `pip install backports.shutil_get_terminal_size`  
 (otherwise jupyter notebook does not work properly)  
+
+emacs:  
+```
+sudo add-apt-repository -y ppa:cassou/emacs
+sudo apt-get -qq update
+sudo apt-get install -y emacs24-nox emacs24-el emacs24-common-non-dfsg
+```
 
 **5) Setup for Kaggle Competition**  
 _on aws-instance:_  
