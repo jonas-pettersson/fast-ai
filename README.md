@@ -19,7 +19,7 @@ EBS volumes / Size: 32 GiB
 Security groups: default  
 (Next / Review)  
 
-You may need to change the security group settings if you cannot login to your instance:  
+May need to change the security group settings if cannot login to instance:  
 AWS Console -> (Login) -> EC2 Dashboard -> Instances  
 Select instance -> Security Groups -> "default" (or which ever you are using)  
 Tab "Inbound" -> Edit  
@@ -41,7 +41,7 @@ cd ~/.ssh
 emacs config
 ```
 
-copy / paste the HostName (Public DNS) of your AWS instance  
+copy / paste the HostName (Public DNS) of AWS instance  
 
 Now it can look something like this:  
 _Host aws-p2_  
@@ -58,11 +58,11 @@ ssh aws-p2
 
 **4) Setup AWS Instance**  
 _on aws-instance:_  
-`git clone https://github.com/jonas-pettersson/fast-ai-courses`
-(this is my forked copy of https://github.com/fastai/courses/ including my own work)  
+`git clone https://github.com/jonas-pettersson/fast-ai`  
+(this is a forked copy of https://github.com/fastai/courses/ including own work)  
 
 ```
-./fast-ai-courses/setup/install-gpu.sh
+./fast-ai/install-gpu.sh
 sudo apt install python-pip
 ```
 (pip is not installed by the script)  
@@ -74,7 +74,7 @@ sudo apt-get install unzip
 ```
 (unzip is not installed by the script)  
 
-`pip install backports.shutil_get_terminal_size`
+`pip install backports.shutil_get_terminal_size`  
 (otherwise jupyter notebook does not work properly)  
 
 **5) Setup for Kaggle Competition**  
@@ -88,7 +88,7 @@ mkdir dogs-cats-redux
 cd dogs-cats-redux
 mkdir models
 ```
-(this is the directory structure I use)  
+(this is the directory structure for dogs-cats-redux)  
 
 ```
 cd
@@ -99,15 +99,15 @@ kg config -g -u "your_kaggle_username" -p "your_kaggle_password" -c "your_kaggle
 cd ~/fast-ai/data/dogs-cats-redux
 ~/fast-ai/setup_kg.sh
 ```
-(this is my own setup script for kaggle, setting up directories, creating  
-validation set, samle sets etc:  
+(this is a setup script for kaggle, setting up directories, creating  
+validation set, sample sets etc:  
  https://github.com/jonas-pettersson/fast-ai/blob/master/setup_kg.sh)  
 
 **6) Transfer Files**  
-need to transfer the files you need from your local machine using rsync, e.g.  
+need to transfer the files from your local machine using rsync, e.g.  
 _in cygwin:_  
-`rsync -avp --progress dogs-cats-redux-model.h5 aws-p2:~/fast-ai/data/dogs-cats-redux/models`
-This takes some time unfortunately and is kind of a drawback of the spot-instance approach. Best is to consider carefully what you really need.  
+`rsync -avp --progress dogs-cats-redux-model.h5 aws-p2:~/fast-ai/data/dogs-cats-redux/models`  
+This takes some time unfortunately and is the drawback of the spot-instance approach. Best is to consider carefully what is really need.  
 
 **7) Start Working**  
 _on aws-instance:_  
@@ -117,10 +117,10 @@ jupyter notebook
 ```
 
 **8) Save Results**  
-After you're done transfer  models back:  
+After work is done transfer the model(s) back with rsync:  
 _in cygwin:_  
-`rsync -avp --progress aws-p2:~/dogs-cats-redux/models/dogs-cats-redux-model.h5 .`
-You will also want to save your notebooks / scripts etc. to GitHub  
+`rsync -avp --progress aws-p2:~/dogs-cats-redux/models/dogs-cats-redux-model.h5 .`  
+May also want to save notebooks / scripts etc. to GitHub  
 _on aws-instance:_  
 ```
 git add ...
@@ -130,7 +130,8 @@ git push origin master
 
 **9) Terminate Instance**  
 Make sure everything saved  
-AWS Console -> (Login) -> EC2 Dashboard -> Spot Requests -> Actions -> cancel spot request + check box "Terminate instances"  
+AWS Console -> (Login) -> EC2 Dashboard -> Spot Requests -> Actions ->  
+cancel spot request + check box "Terminate instances"  
 Check in EC2 Dashboard -> Instances that instance is terminated  
 
 ## ___setup_kg.sh___  
