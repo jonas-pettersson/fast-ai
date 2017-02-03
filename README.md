@@ -11,85 +11,135 @@ AWS Console -> (Login) -> EC2 Dashboard -> Spot Requests
 (only changed parameters shown - leave rest as default)
 
 Request type: Request
+
 AMI: Ubuntu Server 16.04 LTS (HVM)
+
 Instance type: p2.xlarge (delete c3.,...)
+
 Set your max price: e.g. 0.3
+
 (Next)
 
+
 Instance store: attach at launch
+
 EBS volumes / Size: 32 GiB
+
 Security groups: default
+
 (Next / Review)
 
+
 You may need to change the security group settings if you cannot login to your instance:
+
 AWS Console -> (Login) -> EC2 Dashboard -> Instances
+
 Select instance -> Security Groups -> "default" (or which ever you are using)
+
 Tab "Inbound" -> Edit
 
+
 Type: SSH
+
 Protocol: TCP
+
 Port Range: 22
+
 Source: 0.0.0.0/0
 
+
 Type: TCP
+
 Protocol: TCP
+
 Port Range: 8888-8898
+
 Source: 0.0.0.0/0
 
 **2) Configure SSH**
 
 _in cygwin:_
-`cd ~/.ssh
-emacs config`
+
+`cd ~/.ssh`
+
+`emacs config`
+
 copy / paste the HostName (Public DNS) of your AWS instance
+
 It can look something like this:
+
 _Host aws-p2_
+
 _HostName ec2-35-166-166-129.us-west-2.compute.amazonaws.com_
+
 _User ubuntu_
+
 _IdentityFile "~/.ssh/aws-key.pem"_
 
 **3) Login**
 
 _in cygwin:_
-`cd
-ssh aws-p2`
+
+`cd`
+
+`ssh aws-p2`
 
 **4) Setup AWS Instance**
 
 _on aws-instance:_
+
 `git clone https://github.com/jonas-pettersson/fast-ai-courses`
+
  (this is my forked copy of https://github.com/fastai/courses/ including my own work)
+ 
 `./fast-ai-courses/setup/install-gpu.sh`
 
 `sudo apt install python-pip`
+
  (pip is not installed by the script)
-`pip install --upgrade cliff
-pip install kaggle-cli`
+ 
+`pip install --upgrade cliff`
+
+`pip install kaggle-cli`
 
 `sudo apt-get install unzip`
+
  (unzip is not installed by the script)
 
 `pip install backports.shutil_get_terminal_size`
+
 (otherwise jupyter notebook does not work properly)
 
 **5) Setup for Kaggle Competition**
 
 _on aws-instance:_
-`cd
-cd fast-ai
-mkdir data
-cd data
-mkdir dogs-cats-redux
-cd dogs-cats-redux
-mkdir models`
+
+`cd`
+
+`cd fast-ai`
+
+`mkdir data`
+
+`cd data`
+
+`mkdir dogs-cats-redux`
+
+`cd dogs-cats-redux`
+
+`mkdir models`
+
 (this is the directory structure I use)
 
-`cd
-tmux
-kg config -g -u "your_kaggle_username" -p "your_kaggle_password" -c "your_kaggle_competition"`
+`cd`
 
-`cd ~/fast-ai/data/dogs-cats-redux 
-~/fast-ai/setup_kg.sh`
+`tmux`
+
+`kg config -g -u "your_kaggle_username" -p "your_kaggle_password" -c "your_kaggle_competition"`
+
+`cd ~/fast-ai/data/dogs-cats-redux`
+
+`~/fast-ai/setup_kg.sh`
+
  (this is my own setup script for kaggle, setting up directories, creating
 validation set, samle sets etc:
  https://github.com/jonas-pettersson/fast-ai/blob/master/setup_kg.sh)
