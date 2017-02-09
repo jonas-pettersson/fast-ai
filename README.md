@@ -60,7 +60,7 @@ ssh aws-p2
 **4) Setup AWS Instance**  
 _on aws-instance:_  
 `git clone https://github.com/jonas-pettersson/fast-ai`  
-(this is a forked copy of https://github.com/fastai/courses/ including own work)  
+(this is my own version of https://github.com/fastai/courses/ including own work)  
 
 `./fast-ai/scripts/install-gpu.sh`  
 
