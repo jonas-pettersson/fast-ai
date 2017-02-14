@@ -64,6 +64,9 @@ _on aws-instance:_
 
 `./fast-ai/scripts/install-gpu.sh`  
 
+`nvidia-smi`
+(check if nvidia gpu is working)
+
 ```
 sudo apt install python-pip
 pip install --upgrade cliff
