@@ -66,6 +66,7 @@ _on aws-instance:_
 
 for the part II of the course, using python 3 and tensorflow,
 us this script INSTEAD of above:
+
 `./fast-ai/scripts/install-gpu-tf.sh` 
 
 `nvidia-smi`
