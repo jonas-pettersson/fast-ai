@@ -71,3 +71,11 @@ cd data
 mkdir dogs-cats-redux
 cd dogs-cats-redux
 mkdir models
+
+# tree and some aliases
+sudo apt-get install tree
+echo >> ~/.bashrc
+echo "# some aliases" >> ~/.bashrc
+echo "alias ..='cd ..'" >> ~/.bashrc
+echo "alias du='du -ch --max-depth=1'" >> ~/.bashrc
+echo "alias treeacl='tree -A -C -L 2'" >> ~/.bashrc
