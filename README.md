@@ -64,41 +64,24 @@ _on aws-instance:_
 
 `./fast-ai/scripts/install-gpu.sh`  
 
+for the part II of the course, using python 3 and tensorflow,
+us this script INSTEAD of above:
+`./fast-ai/scripts/install-gpu-tf.sh` 
+
 `nvidia-smi`
 (check if nvidia gpu is working)
 
-```
-sudo apt install python-pip
-pip install --upgrade cliff
-pip install kaggle-cli
-sudo apt-get install unzip
-```
-(pip / unzip is not installed by the script. cliff needed for kaggle-cli)  
-
-`pip install backports.shutil_get_terminal_size`  
-(otherwise jupyter notebook does not work properly)  
-
-emacs:  
-```
-sudo apt-get install -y emacs24-nox emacs24-el emacs24-common-non-dfsg
-```
-
 **5) Setup for Kaggle Competition**  
+You may need to logout from the AWS instance and login again at this stage.
+(for all paths from .bashrc to take effect)
+
 _on aws-instance:_  
-```
-cd
-cd fast-ai
-mkdir data
-cd data
-mkdir dogs-cats-redux
-cd dogs-cats-redux
-mkdir models
-```
-(this is the directory structure for dogs-cats-redux)  
+
+from here you can use tmux for convenience
+`tmux`  
 
 ```
 cd
-tmux
 kg config -g -u "your_kaggle_username" -p "your_kaggle_password" -c "your_kaggle_competition"
 ```
 ```
