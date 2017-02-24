@@ -63,3 +63,11 @@ pip install backports.shutil_get_terminal_size
 
 # emacs
 sudo apt-get install -y emacs24-nox emacs24-el emacs24-common-non-dfsg
+
+# tree and some aliases
+sudo apt-get install tree
+echo >> ~/.bashrc
+echo "# some aliases" >> ~/.bashrc
+echo "alias ..='cd ..'" >> ~/.bashrc
+echo "alias du='du -ch --max-depth=1'" >> ~/.bashrc
+echo "alias treeacl='tree -A -C -L 2'" >> ~/.bashrc
