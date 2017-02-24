@@ -72,12 +72,12 @@ use this script INSTEAD of above:
 (check if nvidia gpu is working)
 
 **5) Setup for Kaggle Competition**  
-You may need to logout from the AWS instance and login again at this stage.
-(for all paths from .bashrc to take effect)
+You may need to logout from the AWS instance and login again at this stage.  
+(for all paths from .bashrc to take effect)  
 
 _on aws-instance:_  
 
-from here you can use tmux for convenience
+from here you can use tmux for convenience  
 `tmux`  
 
 ```
