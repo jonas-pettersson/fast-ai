@@ -65,11 +65,10 @@ _on aws-instance:_
 `./fast-ai/scripts/install-gpu.sh`  
 
 for the part II of the course, using python 3 and tensorflow,
-us this script INSTEAD of above:
-
+use this script INSTEAD of above:  
 `./fast-ai/scripts/install-gpu-tf.sh` 
 
-`nvidia-smi`
+`nvidia-smi`  
 (check if nvidia gpu is working)
 
 **5) Setup for Kaggle Competition**  
