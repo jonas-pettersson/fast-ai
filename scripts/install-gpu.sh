@@ -49,3 +49,25 @@ echo "c.NotebookApp.password = u'"$jupass"'" >> $HOME/.jupyter/jupyter_notebook_
 echo "c.NotebookApp.ip = '*'
 c.NotebookApp.open_browser = False" >> $HOME/.jupyter/jupyter_notebook_config.py
 mkdir nbs
+
+# from the setup process
+# pip / unzip is not installed by the script. cliff needed for kaggle-cli
+sudo apt install python-pip
+pip install --upgrade cliff
+pip install kaggle-cli
+sudo apt-get install unzip
+
+# otherwise jupyter notebook does not work properly
+pip install backports.shutil_get_terminal_size
+
+# emacs
+sudo apt-get install -y emacs24-nox emacs24-el emacs24-common-non-dfsg
+
+# Setup for Kaggle Competition
+cd
+cd fast-ai
+mkdir data
+cd data
+mkdir dogs-cats-redux
+cd dogs-cats-redux
+mkdir models
