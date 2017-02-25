@@ -1,0 +1,20 @@
+{
+  "ImageId": "ami-b7a114d7",
+  "InstanceType": "p2.xlarge",
+  "KeyName": "aws-key",
+  "Placement": {
+	"AvailabilityZone": "us-west-2b"
+  },
+  "BlockDeviceMappings": [
+	{
+	  "DeviceName": "/dev/sda1",
+	  "Ebs": {
+		"DeleteOnTermination": false,
+		"VolumeType": "gp2",
+		"VolumeSize": 32,
+		"SnapshotId": "snap-b7ae1993"
+	  }
+	}
+  ],
+  "SecurityGroupIds": ["sg-7ebd5511"]
+}
