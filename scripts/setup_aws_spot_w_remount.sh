@@ -40,9 +40,8 @@ aws ec2 wait volume-in-use --volume-ids $ROOT_VOLUME_ID
 export INSTANCE_PUBLIC_DNS=`aws ec2 describe-instances --instance-ids $INSTANCE_ID --query="Reservations[*].Instances[*].PublicDnsName"`
 echo $INSTANCE_PUBLIC_DNS
 
-ssh -i ~/.ssh/aws-key.pem ubuntu@$INSTANCE_PUBLIC_DNS
-# git clone https://github.com/jonas-pettersson/fast-ai
-# sudo ~/fast-ai/scripts/remount_root.sh
+ssh -i ~/.ssh/aws-key.pem ubuntu@$INSTANCE_PUBLIC_DNS "git clone https://github.com/jonas-pettersson/fast-ai"
+ssh -i ~/.ssh/aws-key.pem ubuntu@$INSTANCE_PUBLIC_DNS "sudo ~/fast-ai/scripts/remount_root.sh"
 
 # ssh-keygen -R $INSTANCE_PUBLIC_DNS
 # ssh -i ~/.ssh/aws-key.pem ubuntu@$INSTANCE_PUBLIC_DNS
