@@ -1,19 +1,17 @@
 #!/bin/bash
 
-set -e
-
 DEVICE=/dev/xvdf1
 NEWMNT=/permaroot
 OLDMNT=old-root
-sudo e2label $DEVICE permaroot
-sudo tune2fs $DEVICE -U `uuidgen`
-sudo mkdir $NEWMNT
+e2label $DEVICE permaroot
+tune2fs $DEVICE -U `uuidgen`
+mkdir $NEWMNT
 
 #
 # point of no return... 
 # modify /sbin/init on the ephemeral volume to chain-load from the persistent EBS volume, and then reboot.
 #
-sudo mv /sbin/init /sbin/init.backup
+mv /sbin/init /sbin/init.backup
 cat > /sbin/init << EOF11
 #!/bin/sh
 mount $DEVICE $NEWMNT
@@ -26,5 +24,5 @@ for dir in /dev /proc /sys /run; do
 done
 exec chroot . /sbin/init
 EOF11
-sudo chmod +x /sbin/init
-sudo shutdown -r now
+chmod +x /sbin/init
+shutdown -r now
