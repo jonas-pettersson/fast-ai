@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 DEVICE=/dev/xvdf1
 NEWMNT=/permaroot
 OLDMNT=old-root
