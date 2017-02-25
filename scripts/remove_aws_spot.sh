@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/bin/
+
+set -e
+
 # aws ec2 cancel-spot-fleet-requests --spot-fleet-request-ids $SPOT_REQUEST_ID --terminate-instances
 aws ec2 cancel-spot-instance-requests --spot-instance-request-ids $SPOT_ID
 aws ec2 terminate-instances --instance-ids $INSTANCE_ID
