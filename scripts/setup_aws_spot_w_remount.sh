@@ -5,8 +5,8 @@ export ROOT_VOL_NAME="spot"
 export ROOT_VOLUME_ID=`aws ec2 describe-volumes --filters Name=tag-key,Values="Name" Name=tag-value,Values="$ROOT_VOL_NAME" --query="Volumes[*].VolumeId" --output="text"`
 echo $ROOT_VOLUME_ID
 
-export AVAILABILITY_ZONE=`aws ec2 describe-volumes --volume-ids $ROOT_VOLUME_ID --query="Volumes[*].AvailabilityZone"`
-echo $AVAILABILITY_ZONE
+# export AVAILABILITY_ZONE=`aws ec2 describe-volumes --volume-ids $ROOT_VOLUME_ID --query="Volumes[*].AvailabilityZone"`
+# echo $AVAILABILITY_ZONE
 
 # SPOT_REQUEST_ID=$(aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json)
 # echo $SPOT_REQUEST_ID
@@ -15,7 +15,7 @@ echo $AVAILABILITY_ZONE
 # SPOT_REQUEST_ID=$(aws ec2 request-spot-instances --spot-price "0.3" --launch-specification file://specification.json)
 # echo $SPOT_REQUEST_ID
 
-aws ec2 request-spot-instances --spot-price "0.3" --launch-specification file://specification.json)
+aws ec2 request-spot-instances --spot-price "0.3" --launch-specification file://specification.json
 
 export SPOT_REQUEST_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].InstanceId" --output="text"`
 echo $SPOT_REQUEST_ID
