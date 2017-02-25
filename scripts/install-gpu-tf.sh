@@ -53,10 +53,10 @@ mkdir nbs
 
 # from my setup process
 # pip / unzip is not installed by the script. cliff needed for kaggle-cli
-sudo apt install python-pip
+sudo apt install -y python-pip
 pip install --upgrade cliff
 pip install kaggle-cli
-sudo apt-get install unzip
+sudo apt-get -y install unzip
 
 # otherwise jupyter notebook does not work properly
 pip install backports.shutil_get_terminal_size
@@ -65,7 +65,7 @@ pip install backports.shutil_get_terminal_size
 sudo apt-get install -y emacs24-nox emacs24-el emacs24-common-non-dfsg
 
 # tree and some aliases
-sudo apt-get install tree
+sudo apt-get install -y tree
 echo >> ~/.bashrc
 echo "# some aliases" >> ~/.bashrc
 echo "alias ..='cd ..'" >> ~/.bashrc
