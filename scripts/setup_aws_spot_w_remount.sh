@@ -1,6 +1,8 @@
 #!/bin/bash
 # configure specification.json so that instance will be in same availability zone as your volume!
 
+set -e
+
 export ROOT_VOL_NAME="spot"
 export ROOT_VOLUME_ID=`aws ec2 describe-volumes --filters Name=tag-key,Values="Name" Name=tag-value,Values="$ROOT_VOL_NAME" --query="Volumes[*].VolumeId" --output="text"`
 echo $ROOT_VOLUME_ID
@@ -33,8 +35,14 @@ export A_VOLUME_ID=`aws ec2 describe-instances --instance-ids $INSTANCE_ID --que
 echo $A_VOLUME_ID
 
 aws ec2 attach-volume --volume-id $ROOT_VOLUME_ID --instance-id $INSTANCE_ID --device /dev/sdf
+aws ec2 wait volume-in-use --volume-ids $ROOT_VOLUME_ID
 
 export INSTANCE_PUBLIC_DNS=`aws ec2 describe-instances --instance-ids $INSTANCE_ID --query="Reservations[*].Instances[*].PublicDnsName"`
 echo $INSTANCE_PUBLIC_DNS
-ssh-keygen -R $INSTANCE_PUBLIC_DNS
+
 ssh -i ~/.ssh/aws-key.pem ubuntu@$INSTANCE_PUBLIC_DNS
+# git clone https://github.com/jonas-pettersson/fast-ai
+# sudo ~/fast-ai/scripts/remount_root.sh
+
+# ssh-keygen -R $INSTANCE_PUBLIC_DNS
+# ssh -i ~/.ssh/aws-key.pem ubuntu@$INSTANCE_PUBLIC_DNS
