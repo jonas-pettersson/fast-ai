@@ -37,7 +37,7 @@
 # Name of the AWS Volume to mount
 AWS_ROOT_VOL_NAME="spot"
 
-AWS_MAX_SPOT_PRICE="0.3"
+AWS_MAX_SPOT_PRICE="0.5"
 echo "AWS_MAX_SPOT_PRICE="${AWS_MAX_SPOT_PRICE}
 
 # launch-specification file with JSON syntax described here:
@@ -99,8 +99,15 @@ echo "Waiting for AWS Spot Instance to reboot"
 aws ec2 wait instance-status-ok --instance-ids $AWS_INSTANCE_ID
 
 # It is necessary to remove the SSH key because we have a new volume - otherwise they will not match
-echo "Removes all SSH keys belonging to new instance from known_hosts file"
+echo "Remove all SSH keys belonging to new instance from known_hosts file"
 ssh-keygen -R $AWS_INSTANCE_PUBLIC_DNS
 
-echo "Login to new instance"
-ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS
+echo "Please give the AWS Instance some time (~30 sec) to get initialized after reboot"
+echo "Then login using following command:"
+echo "ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS"
+echo
+echo "If you want to remove this instance with remove_aws_spot.sh"
+echo "you will need to set following variables:"
+echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
+echo "AWS_INSTANCE_ID="${AWS_INSTANCE_ID}
+echo "AWS_VOLUME_ID="${AWS_VOLUME_ID}
