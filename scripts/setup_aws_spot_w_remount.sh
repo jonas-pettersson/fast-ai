@@ -62,16 +62,13 @@ echo "AWS_ROOT_VOLUME_ID="${AWS_ROOT_VOLUME_ID}
 # echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
 
 echo "Requesting new AWS Spot Instance"
-aws ec2 request-spot-instances --spot-price $AWS_MAX_SPOT_PRICE --launch-specification $AWS_CONF_FILE
+export AWS_SPOT_REQUEST_ID=`aws ec2 request-spot-instances --spot-price $AWS_MAX_SPOT_PRICE --launch-specification $AWS_CONF_FILE --query="SpotInstanceRequests[*].SpotInstanceRequestId" --output="text"`
+echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
+# Note that the exported AWS_SPOT_REQUEST_ID is needed by the remove_aws_spot.sh script when terminating!
 
 # Fetch AWS Spot ID. Assumes that the recently created request is the only one active! (if not change the filter)
 # export AWS_SPOT_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].InstanceId" --output="text"`
 # echo "AWS_SPOT_ID="${AWS_SPOT_ID}
-
-# Fetch AWS Spot Request Id. Assumes that the recently created request is the only one active! (if not change the filter)
-# Note that the exported AWS_SPOT_REQUEST_ID is needed by the remove_aws_spot.sh script when terminating!
-export AWS_SPOT_REQUEST_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].SpotInstanceRequestId" --output="text"`
-echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
 
 echo "Waiting for AWS Spot Request to fulfill"
 aws ec2 wait spot-instance-request-fulfilled --spot-instance-request-ids $AWS_SPOT_REQUEST_ID
