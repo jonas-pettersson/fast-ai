@@ -3,7 +3,7 @@
 #============================================================
 #    FILE:  setup_aws_spot_w_remount.sh
 #
-#    USAGE:  ./setup_aws_spot_w_remount.sh
+#    USAGE:  . /setup_aws_spot_w_remount.sh
 #
 #    DESCRIPTION: sets up a new aws spot instance and
 #                 mounts an existing volume to root
