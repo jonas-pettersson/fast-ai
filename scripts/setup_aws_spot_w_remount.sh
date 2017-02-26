@@ -49,7 +49,7 @@ AWS_CONF_FILE="file://specification.json"
 echo "AWS_CONF_FILE="${AWS_CONF_FILE}
 
 # Fetch AWS Volume ID
-export AWS_ROOT_VOLUME_ID=`aws ec2 describe-volumes --filters Name=tag-key,Values="Name" Name=tag-value,Values="$AWS_ROOT_VOL_NAME" --query="Volumes[*].VolumeId" --output="text"`
+AWS_ROOT_VOLUME_ID=`aws ec2 describe-volumes --filters Name=tag-key,Values="Name" Name=tag-value,Values="$AWS_ROOT_VOL_NAME" --query="Volumes[*].VolumeId" --output="text"`
 echo "AWS_ROOT_VOLUME_ID="${AWS_ROOT_VOLUME_ID}
 
 # Fetch AWS Availability Zone of the AWS Volume
@@ -62,21 +62,16 @@ echo "AWS_ROOT_VOLUME_ID="${AWS_ROOT_VOLUME_ID}
 # echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
 
 echo "Requesting new AWS Spot Instance"
-export AWS_SPOT_REQUEST_ID=`aws ec2 request-spot-instances --spot-price $AWS_MAX_SPOT_PRICE --launch-specification $AWS_CONF_FILE --query="SpotInstanceRequests[*].SpotInstanceRequestId" --output="text"`
+AWS_SPOT_REQUEST_ID=`aws ec2 request-spot-instances --spot-price $AWS_MAX_SPOT_PRICE --launch-specification $AWS_CONF_FILE --query="SpotInstanceRequests[*].SpotInstanceRequestId" --output="text"`
 echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
 # Note that the exported AWS_SPOT_REQUEST_ID is needed by the remove_aws_spot.sh script when terminating!
-
-# Fetch AWS Spot ID. Assumes that the recently created request is the only one active! (if not change the filter)
-# export AWS_SPOT_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].InstanceId" --output="text"`
-# echo "AWS_SPOT_ID="${AWS_SPOT_ID}
 
 echo "Waiting for AWS Spot Request to fulfill"
 aws ec2 wait spot-instance-request-fulfilled --spot-instance-request-ids $AWS_SPOT_REQUEST_ID
 
 # Fetch AWS Instance ID of the newly created AWS Spot Instance
-# Assumes that the recently created request is the only one active! (if not change the filter)
 # Note that the exported AWS_INSTANCE_ID is needed by the remove_aws_spot.sh script when terminating!
-export AWS_INSTANCE_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].InstanceId" --output="text"`
+AWS_INSTANCE_ID=`aws ec2 describe-spot-instance-requests --filters Name=spot-instance-request-id,Values=$AWS_SPOT_REQUEST_ID --query="SpotInstanceRequests[*].InstanceId" --output="text"`
 echo "AWS_INSTANCE_ID="${AWS_INSTANCE_ID}
 
 echo "Waiting for AWS Spot Instance to start and initialize"
@@ -84,7 +79,7 @@ aws ec2 wait instance-status-ok --instance-ids $AWS_INSTANCE_ID
 
 # Fetch AWS Volume ID of the newly created AWS Spot Instance
 # Note that the exported AWS_VOLUME_ID is needed by the remove_aws_spot.sh script when terminating!
-export AWS_VOLUME_ID=`aws ec2 describe-instances --instance-ids $AWS_INSTANCE_ID --query="Reservations[*].Instances[*].BlockDeviceMappings[*].Ebs.VolumeId"`
+AWS_VOLUME_ID=`aws ec2 describe-instances --instance-ids $AWS_INSTANCE_ID --query="Reservations[*].Instances[*].BlockDeviceMappings[*].Ebs.VolumeId"`
 echo "AWS_VOLUME_ID="${AWS_VOLUME_ID}
 
 echo "Attaching existing AWS Volume to new AWS Instance"
@@ -93,7 +88,7 @@ echo "Waiting for AWS Volume to attach and initialize"
 aws ec2 wait volume-in-use --volume-ids $AWS_ROOT_VOLUME_ID
 
 # Fetch Public DNS of new AWS Instance
-export AWS_INSTANCE_PUBLIC_DNS=`aws ec2 describe-instances --instance-ids $AWS_INSTANCE_ID --query="Reservations[*].Instances[*].PublicDnsName"`
+AWS_INSTANCE_PUBLIC_DNS=`aws ec2 describe-instances --instance-ids $AWS_INSTANCE_ID --query="Reservations[*].Instances[*].PublicDnsName"`
 echo "AWS_INSTANCE_PUBLIC_DNS="${AWS_INSTANCE_PUBLIC_DNS}
 
 echo "Fething remount-script to new AWS Instance"
