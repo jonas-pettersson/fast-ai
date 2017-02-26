@@ -1,47 +1,113 @@
 #!/bin/bash
-# configure specification.json so that instance will be in same availability zone as your volume!
 
+#============================================================
+#    FILE:  setup_aws_spot_w_remount.sh
+#
+#    USAGE:  ./setup_aws_spot_w_remount.sh
+#
+#    DESCRIPTION: sets up a new aws spot instance and
+#                 mounts an existing volume to root
+#                 1) Reqest new AWS Spot Instance
+#                 2) Attach existing volume to new instance
+#                 3) Execute remount-root-script on new instance
+#                 4) Login to new instance
+#
+#    PREREQUISITES:
+#    - there exists an aws volume named as AWS_ROOT_VOL_NAME below
+#    - configure specification.json to meet your needs
+#    - set AWS_MAX_SPOT_PRICE below
+#    - spot instance OS must match volume OS
+#
+#    PLEASE NOTE:
+#    - Swapping the root volume is a potentially dangerous operation!
+#    - Please test the script on a non-critical volume before using
+#      for critical data
+#    - spot instance must be set up in same availability zone as volume!
+#    - default specification.json is set up to create spot instance with
+#          + AMI of OS Ubuntu Server 16.04 LTS (HVM)
+#          + Instance type p2.xlarge
+#          + Availability zone us-west-2b
+#
+#    AUTHOR:  Jonas Pettersson, j.g.f.pettersson@gmail.com
+#    CREATED:  26/02/2017
+#============================================================
+
+# Interrupt if any error occurs
 set -e
 
-export ROOT_VOL_NAME="spot"
-export ROOT_VOLUME_ID=`aws ec2 describe-volumes --filters Name=tag-key,Values="Name" Name=tag-value,Values="$ROOT_VOL_NAME" --query="Volumes[*].VolumeId" --output="text"`
-echo $ROOT_VOLUME_ID
+# Name of the AWS Volume to mount
+AWS_ROOT_VOL_NAME="spot"
 
-# export AVAILABILITY_ZONE=`aws ec2 describe-volumes --volume-ids $ROOT_VOLUME_ID --query="Volumes[*].AvailabilityZone"`
-# echo $AVAILABILITY_ZONE
+AWS_MAX_SPOT_PRICE="0.3"
+echo "AWS_MAX_SPOT_PRICE="${AWS_MAX_SPOT_PRICE}
 
-# SPOT_REQUEST_ID=$(aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json)
-# echo $SPOT_REQUEST_ID
+# launch-specification file with JSON syntax described here:
+# http://docs.aws.amazon.com/cli/latest/reference/ec2/request-spot-instances.html
+AWS_CONF_FILE=file://specification.json
+echo "AWS_CONF_FILE="${AWS_CONF_FILE}
 
-# SPOT_REQUEST_ID=$(aws ec2 request-spot-instances --spot-price "0.3" --availability-zone-group $AVAILABILITY_ZONE --launch-specification file://specification.json)
-# SPOT_REQUEST_ID=$(aws ec2 request-spot-instances --spot-price "0.3" --launch-specification file://specification.json)
-# echo $SPOT_REQUEST_ID
+# Fetch AWS Volume ID
+export AWS_ROOT_VOLUME_ID=`aws ec2 describe-volumes --filters Name=tag-key,Values="Name" Name=tag-value,Values="$AWS_ROOT_VOL_NAME" --query="Volumes[*].VolumeId" --output="text"`
+echo "AWS_ROOT_VOLUME_ID="${AWS_ROOT_VOLUME_ID}
 
-aws ec2 request-spot-instances --spot-price "0.3" --launch-specification file://specification.json
+# Fetch AWS Availability Zone of the AWS Volume
+# export AWS_AVAILABILITY_ZONE=`aws ec2 describe-volumes --volume-ids $AWS_ROOT_VOLUME_ID --query="Volumes[*].AvailabilityZone"`
+# echo "AWS_AVAILABILITY_ZONE="${AWS_AVAILABILITY_ZONE}
 
-export SPOT_REQUEST_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].InstanceId" --output="text"`
-echo $SPOT_REQUEST_ID
+# If setting up a spot fleet, use these lines (not thoroughly tested).
+# Please note that configuration file has another format!
+# AWS_SPOT_REQUEST_ID=$(aws ec2 request-spot-fleet --spot-fleet-request-config $AWS_CONF_FILE)
+# echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
 
-export SPOT_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].SpotInstanceRequestId" --output="text"`
-echo $SPOT_ID
+echo "Requesting new AWS Spot Instance"
+aws ec2 request-spot-instances --spot-price $AWS_MAX_SPOT_PRICE --launch-specification AWS_CONF_FILE
 
-aws ec2 wait spot-instance-request-fulfilled --spot-instance-request-ids $SPOT_ID
+# Fetch AWS Spot ID. Assumes that the recently created request is the only one active! (if not change the filter)
+# export AWS_SPOT_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].InstanceId" --output="text"`
+# echo "AWS_SPOT_ID="${AWS_SPOT_ID}
 
-export INSTANCE_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].InstanceId" --output="text"`
-echo $INSTANCE_ID
-aws ec2 wait instance-status-ok --instance-ids $INSTANCE_ID
+# Fetch AWS Spot Request Id. Assumes that the recently created request is the only one active! (if not change the filter)
+# Note that the exported AWS_SPOT_REQUEST_ID is needed by the remove_aws_spot.sh script when terminating!
+export AWS_SPOT_REQUEST_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].SpotInstanceRequestId" --output="text"`
+echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
 
-export A_VOLUME_ID=`aws ec2 describe-instances --instance-ids $INSTANCE_ID --query="Reservations[*].Instances[*].BlockDeviceMappings[*].Ebs.VolumeId"`
-echo $A_VOLUME_ID
+echo "Waiting for AWS Spot Request to fulfill"
+aws ec2 wait spot-instance-request-fulfilled --spot-instance-request-ids $AWS_SPOT_REQUEST_ID
 
-aws ec2 attach-volume --volume-id $ROOT_VOLUME_ID --instance-id $INSTANCE_ID --device /dev/sdf
-aws ec2 wait volume-in-use --volume-ids $ROOT_VOLUME_ID
+# Fetch AWS Instance ID of the newly created AWS Spot Instance
+# Assumes that the recently created request is the only one active! (if not change the filter)
+# Note that the exported AWS_INSTANCE_ID is needed by the remove_aws_spot.sh script when terminating!
+export AWS_INSTANCE_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].InstanceId" --output="text"`
+echo "AWS_INSTANCE_ID="${AWS_INSTANCE_ID}
 
-export INSTANCE_PUBLIC_DNS=`aws ec2 describe-instances --instance-ids $INSTANCE_ID --query="Reservations[*].Instances[*].PublicDnsName"`
-echo $INSTANCE_PUBLIC_DNS
+echo "Waiting for AWS Spot Instance to start and initialize"
+aws ec2 wait instance-status-ok --instance-ids $AWS_INSTANCE_ID
 
-ssh -i ~/.ssh/aws-key.pem ubuntu@$INSTANCE_PUBLIC_DNS "git clone https://github.com/jonas-pettersson/fast-ai"
-ssh -i ~/.ssh/aws-key.pem ubuntu@$INSTANCE_PUBLIC_DNS "sudo ~/fast-ai/scripts/remount_root.sh"
+# Fetch AWS Volume ID of the newly created AWS Spot Instance
+# Note that the exported AWS_VOLUME_ID is needed by the remove_aws_spot.sh script when terminating!
+export AWS_VOLUME_ID=`aws ec2 describe-instances --instance-ids $AWS_INSTANCE_ID --query="Reservations[*].Instances[*].BlockDeviceMappings[*].Ebs.VolumeId"`
+echo "AWS_VOLUME_ID="${AWS_VOLUME_ID}
 
-# ssh-keygen -R $INSTANCE_PUBLIC_DNS
-# ssh -i ~/.ssh/aws-key.pem ubuntu@$INSTANCE_PUBLIC_DNS
+echo "Attaching existing AWS Volume to new AWS Instance"
+aws ec2 attach-volume --volume-id $AWS_ROOT_VOLUME_ID --instance-id $AWS_INSTANCE_ID --device /dev/sdf
+echo "Waiting for AWS Volume to attach and initialize"
+aws ec2 wait volume-in-use --volume-ids $AWS_ROOT_VOLUME_ID
+
+# Fetch Public DNS of new AWS Instance
+export AWS_INSTANCE_PUBLIC_DNS=`aws ec2 describe-instances --instance-ids $AWS_INSTANCE_ID --query="Reservations[*].Instances[*].PublicDnsName"`
+echo "AWS_INSTANCE_PUBLIC_DNS="${AWS_INSTANCE_PUBLIC_DNS}
+
+echo "Fething remount-script to new AWS Instance"
+ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS "wget https://raw.githubusercontent.com/jonas-pettersson/fast-ai/master/scripts/remount_root.sh"
+echo "Executing remount-script on new AWS Instance"
+ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS "sudo ~/remount_root.sh"
+
+echo "Waiting for AWS Spot Instance to reboot"
+aws ec2 wait instance-status-ok --instance-ids $AWS_INSTANCE_ID
+
+# It is necessary to remove the SSH key because we have a new volume - otherwise they will not match
+echo "Removes all SSH keys belonging to new instance from known_hosts file"
+ssh-keygen -R $AWS_INSTANCE_PUBLIC_DNS
+
+echo "Login to new instance"
+ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS
