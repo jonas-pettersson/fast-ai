@@ -43,7 +43,7 @@ echo "AWS_MAX_SPOT_PRICE="${AWS_MAX_SPOT_PRICE}
 
 # launch-specification file with JSON syntax described here:
 # http://docs.aws.amazon.com/cli/latest/reference/ec2/request-spot-instances.html
-AWS_CONF_FILE=file://specification.json
+AWS_CONF_FILE="file://specification.json"
 echo "AWS_CONF_FILE="${AWS_CONF_FILE}
 
 # Fetch AWS Volume ID
@@ -60,7 +60,7 @@ echo "AWS_ROOT_VOLUME_ID="${AWS_ROOT_VOLUME_ID}
 # echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
 
 echo "Requesting new AWS Spot Instance"
-aws ec2 request-spot-instances --spot-price $AWS_MAX_SPOT_PRICE --launch-specification AWS_CONF_FILE
+aws ec2 request-spot-instances --spot-price $AWS_MAX_SPOT_PRICE --launch-specification $AWS_CONF_FILE
 
 # Fetch AWS Spot ID. Assumes that the recently created request is the only one active! (if not change the filter)
 # export AWS_SPOT_ID=`aws ec2 describe-spot-instance-requests --filters Name=state,Values="active" --query="SpotInstanceRequests[*].InstanceId" --output="text"`
@@ -99,6 +99,8 @@ echo "AWS_INSTANCE_PUBLIC_DNS="${AWS_INSTANCE_PUBLIC_DNS}
 
 echo "Fething remount-script to new AWS Instance"
 ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS "wget https://raw.githubusercontent.com/jonas-pettersson/fast-ai/master/scripts/remount_root.sh"
+ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS "chmod +x ~/remount_root.sh"
+
 echo "Executing remount-script on new AWS Instance"
 ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS "sudo ~/remount_root.sh"
 
