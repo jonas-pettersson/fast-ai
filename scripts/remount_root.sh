@@ -1,5 +1,32 @@
 #!/bin/bash
 
+#============================================================
+#    FILE:  remount_root.sh
+#
+#    USAGE:  sudo ./remount_root.sh
+#
+#    DESCRIPTION: executes on new spot instance to swap root volume
+#                 to another mounted volume
+#                 Called from setup_aws_spot_w_root.sh
+#                 Essentially copied from:
+#                 https://github.com/slavivanov/ec2-spotter/blob/master/ec2spotter-remount-root
+#                 and
+#                 https://github.com/atramos/ec2-spotter
+#                 All credits to https://github.com/slavivanov and
+#                 https://github.com/atramos
+#
+#    PREREQUISITES:
+#    - existing aws volume mounted
+#
+#    PLEASE NOTE:
+#    - Swapping the root volume is a potentially dangerous operation!
+#    - Please test the script on a non-critical volume before using
+#      for critical data
+#
+#    AUTHOR:  Jonas Pettersson, j.g.f.pettersson@gmail.com
+#    CREATED:  26/02/2017
+#============================================================
+
 DEVICE=/dev/xvdf1
 NEWMNT=/permaroot
 OLDMNT=old-root
