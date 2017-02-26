@@ -3,7 +3,7 @@
 #============================================================
 #    FILE:  setup_aws_spot_w_remount.sh
 #
-#    USAGE:  . /setup_aws_spot_w_remount.sh
+#    USAGE:  . setup_aws_spot_w_remount.sh
 #
 #    DESCRIPTION: sets up a new aws spot instance and
 #                 mounts an existing volume to root
@@ -27,6 +27,8 @@
 #          + AMI of OS Ubuntu Server 16.04 LTS (HVM)
 #          + Instance type p2.xlarge
 #          + Availability zone us-west-2b
+#    - Script sets environment variables used by remove_aws_spot.sh
+#      so needs to run in current shell using ., source or bash
 #
 #    AUTHOR:  Jonas Pettersson, j.g.f.pettersson@gmail.com
 #    CREATED:  26/02/2017
