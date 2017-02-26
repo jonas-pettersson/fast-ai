@@ -34,9 +34,6 @@
 #    CREATED:  26/02/2017
 #============================================================
 
-# Interrupt if any error occurs
-set -e
-
 # Name of the AWS Volume to mount
 AWS_ROOT_VOL_NAME="spot"
 

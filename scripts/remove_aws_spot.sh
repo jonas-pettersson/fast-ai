@@ -3,7 +3,7 @@
 #============================================================
 #    FILE:  remove_aws_spot.sh
 #
-#    USAGE: ./remove_aws_spot.sh
+#    USAGE: . remove_aws_spot.sh
 #
 #    DESCRIPTION: cancels the spot request,
 #                 terminates the instance, and
@@ -13,6 +13,8 @@
 #    - AWS_SPOT_REQUEST_ID, AWS_INSTANCE_ID, AWS_VOLUME_ID set
 #    - These variables should have been set by the
 #      setup_aws_spot_w_remount.sh script
+#    - Script uses environment variables set by setup_aws_spot_w_remount.sh
+#      so needs to run in current shell using ., source or bash
 #
 #    AUTHOR:  Jonas Pettersson, j.g.f.pettersson@gmail.com
 #    CREATED:  26/02/2017
