@@ -58,3 +58,5 @@ echo "Deleting AWS Volume" $AWS_VOLUME_ID
 aws ec2 delete-volume --volume-id $AWS_VOLUME_ID
 echo "Waiting for AWS Volume to be deleted" $AWS_VOLUME_ID
 aws ec2 wait volume-deleted --volume-ids $AWS_VOLUME_ID
+
+rm -vi .aws_spot_profile
