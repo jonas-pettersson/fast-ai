@@ -27,8 +27,8 @@
 #          + AMI of OS Ubuntu Server 16.04 LTS (HVM)
 #          + Instance type p2.xlarge
 #          + Availability zone us-west-2b
-#    - Script sets environment variables used by remove_aws_spot.sh
-#      so needs to run in current shell using ., source or bash
+#    - Script saves environment variables in a file .aws_spot_profile
+#      which is used by remove_aws_spot.sh
 #
 #    AUTHOR:  Jonas Pettersson, j.g.f.pettersson@gmail.com
 #    CREATED:  26/02/2017
@@ -47,7 +47,11 @@ echo "AWS_CONF_FILE="${AWS_CONF_FILE}
 
 # Fetch AWS Volume ID
 AWS_ROOT_VOLUME_ID=`aws ec2 describe-volumes --filters Name=tag-key,Values="Name" Name=tag-value,Values="$AWS_ROOT_VOL_NAME" --query="Volumes[*].VolumeId" --output="text"`
-echo "AWS_ROOT_VOLUME_ID="${AWS_ROOT_VOLUME_ID}
+if [ -z ${AWS_ROOT_VOLUME_ID+x} ]; then
+    echo -e "Could not fetch AWS_ROOT_VOLUME_ID\nExiting"; exit 1
+else
+    echo "AWS_ROOT_VOLUME_ID="${AWS_ROOT_VOLUME_ID}
+fi
 
 # Fetch AWS Availability Zone of the AWS Volume
 # export AWS_AVAILABILITY_ZONE=`aws ec2 describe-volumes --volume-ids $AWS_ROOT_VOLUME_ID --query="Volumes[*].AvailabilityZone"`
@@ -60,7 +64,11 @@ echo "AWS_ROOT_VOLUME_ID="${AWS_ROOT_VOLUME_ID}
 
 echo "Requesting new AWS Spot Instance"
 AWS_SPOT_REQUEST_ID=`aws ec2 request-spot-instances --spot-price $AWS_MAX_SPOT_PRICE --launch-specification $AWS_CONF_FILE --query="SpotInstanceRequests[*].SpotInstanceRequestId" --output="text"`
-echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
+if [ -z ${AWS_SPOT_REQUEST_ID+x} ]; then
+    echo -e "Could not fetch AWS_SPOT_REQUEST_ID\nExiting"; exit 1
+else
+    echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
+fi
 # Note that the exported AWS_SPOT_REQUEST_ID is needed by the remove_aws_spot.sh script when terminating!
 
 echo "Waiting for AWS Spot Request to fulfill"
@@ -69,7 +77,11 @@ aws ec2 wait spot-instance-request-fulfilled --spot-instance-request-ids $AWS_SP
 # Fetch AWS Instance ID of the newly created AWS Spot Instance
 # Note that the exported AWS_INSTANCE_ID is needed by the remove_aws_spot.sh script when terminating!
 AWS_INSTANCE_ID=`aws ec2 describe-spot-instance-requests --filters Name=spot-instance-request-id,Values=$AWS_SPOT_REQUEST_ID --query="SpotInstanceRequests[*].InstanceId" --output="text"`
-echo "AWS_INSTANCE_ID="${AWS_INSTANCE_ID}
+if [ -z ${AWS_INSTANCE_ID+x} ]; then
+    echo -e "Could not fetch AWS_INSTANCE_ID\nExiting"; exit 1
+else
+    echo "AWS_INSTANCE_ID="${AWS_INSTANCE_ID}
+fi
 
 echo "Waiting for AWS Spot Instance to start and initialize"
 aws ec2 wait instance-status-ok --instance-ids $AWS_INSTANCE_ID
@@ -86,7 +98,11 @@ aws ec2 wait volume-in-use --volume-ids $AWS_ROOT_VOLUME_ID
 
 # Fetch Public DNS of new AWS Instance
 AWS_INSTANCE_PUBLIC_DNS=`aws ec2 describe-instances --instance-ids $AWS_INSTANCE_ID --query="Reservations[*].Instances[*].PublicDnsName"`
-echo "AWS_INSTANCE_PUBLIC_DNS="${AWS_INSTANCE_PUBLIC_DNS}
+if [ -z ${AWS_INSTANCE_PUBLIC_DNS+x} ]; then
+    echo -e "Could not fetch AWS_INSTANCE_PUBLIC_DNS\nExiting"; exit 1
+else
+    echo "AWS_INSTANCE_PUBLIC_DNS="${AWS_INSTANCE_PUBLIC_DNS}
+fi
 
 echo "Fething remount-script to new AWS Instance"
 ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS "wget https://raw.githubusercontent.com/jonas-pettersson/fast-ai/master/scripts/remount_root.sh"
@@ -105,9 +121,14 @@ ssh-keygen -R $AWS_INSTANCE_PUBLIC_DNS
 echo "Please give the AWS Instance some time (~30 sec) to get initialized after reboot"
 echo "Then login using following command:"
 echo "ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS"
-echo
-echo "If you want to remove this instance with remove_aws_spot.sh"
-echo "you will need to set following variables:"
+
+cat > .aws_spot_profile << EOF11
+AWS_SPOT_REQUEST_ID=${AWS_SPOT_REQUEST_ID}
+AWS_INSTANCE_ID=${AWS_INSTANCE_ID}
+AWS_VOLUME_ID=${AWS_VOLUME_ID}
+EOF11
+
+echo "Following variables were saved in .aws_spot_profile"
 echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
 echo "AWS_INSTANCE_ID="${AWS_INSTANCE_ID}
 echo "AWS_VOLUME_ID="${AWS_VOLUME_ID}
