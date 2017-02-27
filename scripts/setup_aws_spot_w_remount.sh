@@ -126,9 +126,8 @@ cat > .aws_spot_profile << EOF11
 AWS_SPOT_REQUEST_ID=${AWS_SPOT_REQUEST_ID}
 AWS_INSTANCE_ID=${AWS_INSTANCE_ID}
 AWS_VOLUME_ID=${AWS_VOLUME_ID}
+AWS_INSTANCE_PUBLIC_DNS=${AWS_INSTANCE_PUBLIC_DNS}
 EOF11
 
 echo "Following variables were saved in .aws_spot_profile"
-echo "AWS_SPOT_REQUEST_ID="${AWS_SPOT_REQUEST_ID}
-echo "AWS_INSTANCE_ID="${AWS_INSTANCE_ID}
-echo "AWS_VOLUME_ID="${AWS_VOLUME_ID}
+cat .aws_spot_profile
