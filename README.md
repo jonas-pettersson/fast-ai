@@ -9,7 +9,7 @@ Then you are ready to run:
 `. setup_aws_spot_w_remount.sh` 
 
 ## Script to automatically remove the AWS spot instance
-Please carefully read the comments in remove_aws_spot.sh  
+Please carefully read the comments in [remove_aws_spot.sh](https://raw.githubusercontent.com/jonas-pettersson/fast-ai/master/scripts/remove_aws_spot.sh)  
 Then you are ready to run:   
 `./remove_aws_spot.sh` 
 
