@@ -1,7 +1,6 @@
 # fast-ai  
 http://course.fast.ai  
 ## Script to automatically setup an AWS spot instance and mount with existing volume 
-_in cygwin:_  (i.e. in may case. any bash editor will do)  
 `git clone https://github.com/jonas-pettersson/fast-ai`  
 `cd fast-ai/`  
 
