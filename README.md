@@ -4,7 +4,7 @@ http://course.fast.ai
 `git clone https://github.com/jonas-pettersson/fast-ai`  
 `cd fast-ai/`  
 
-Please carefully read the comments in setup_aws_spot_w_remount.sh  
+Please carefully read the comments in [setup_aws_spot_w_remount.sh](https://raw.githubusercontent.com/jonas-pettersson/fast-ai/master/scripts/setup_aws_spot_w_remount.sh)  
 Then you are ready to run:   
 `. setup_aws_spot_w_remount.sh` 
 
