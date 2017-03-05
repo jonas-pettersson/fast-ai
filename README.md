@@ -1,8 +1,19 @@
 # fast-ai  
 http://course.fast.ai  
+## Script to automatically setup an AWS spot instance and mount with existing volume 
+`git clone https://github.com/jonas-pettersson/fast-ai`  
+`cd fast-ai/`  
 
-## Process to setup spot instance for the course (p2.xlarge)  
-TODO Should be compiled into one script (T.B.D)  
+Please carefully read the comments in [setup_aws_spot_w_remount.sh](https://raw.githubusercontent.com/jonas-pettersson/fast-ai/master/scripts/setup_aws_spot_w_remount.sh)  
+Then you are ready to run:   
+`. setup_aws_spot_w_remount.sh` 
+
+## Script to automatically remove the AWS spot instance
+Please carefully read the comments in [remove_aws_spot.sh](https://raw.githubusercontent.com/jonas-pettersson/fast-ai/master/scripts/remove_aws_spot.sh)  
+Then you are ready to run:   
+`./remove_aws_spot.sh` 
+
+## Manual process to setup spot instance from scratch 
 
 **1) Request Spot Instance**  
 AWS Console -> (Login) -> EC2 Dashboard -> Spot Requests
