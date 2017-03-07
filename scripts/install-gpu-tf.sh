@@ -61,6 +61,9 @@ sudo apt-get -y install unzip
 # otherwise jupyter notebook does not work properly
 pip install backports.shutil_get_terminal_size
 
+# pytorch
+conda install pytorch torchvision cuda80 -c soumith
+
 # emacs
 sudo apt-get install -y emacs24-nox emacs24-el emacs24-common-non-dfsg
 
