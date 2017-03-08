@@ -61,6 +61,9 @@ sudo apt-get -y install unzip
 # otherwise jupyter notebook does not work properly
 pip install backports.shutil_get_terminal_size
 
+# pytorch
+conda install pytorch torchvision cuda80 -c soumith
+
 # emacs
 sudo apt-get install -y emacs24-nox emacs24-el emacs24-common-non-dfsg
 
@@ -68,6 +71,9 @@ sudo apt-get install -y emacs24-nox emacs24-el emacs24-common-non-dfsg
 sudo apt-get install -y tree
 echo >> ~/.bashrc
 echo "# some aliases" >> ~/.bashrc
+echo "alias rm='rm -i'" >> ~/.bashrc
+echo "alias mv='mv -i'" >> ~/.bashrc
+echo "alias cp='cp -i'" >> ~/.bashrc
 echo "alias ..='cd ..'" >> ~/.bashrc
 echo "alias ll='ls -alrtF --color'" >> ~/.bashrc
 echo "alias du='du -ch --max-depth=1'" >> ~/.bashrc

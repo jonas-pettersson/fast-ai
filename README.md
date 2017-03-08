@@ -2,7 +2,7 @@
 http://course.fast.ai  
 ## Script to automatically setup an AWS spot instance and mount with existing volume 
 `git clone https://github.com/jonas-pettersson/fast-ai`  
-`cd fast-ai/`  
+`cd fast-ai/scripts/`  
 
 Please carefully read the comments in [setup_aws_spot_w_remount.sh](https://raw.githubusercontent.com/jonas-pettersson/fast-ai/master/scripts/setup_aws_spot_w_remount.sh)  
 Then you are ready to run:   
