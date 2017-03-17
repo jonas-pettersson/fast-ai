@@ -96,11 +96,11 @@ case $doit in
     n|N) echo ;;
     *) echo ;;
 esac
-# cp /home/ubuntu/nbs/data/dogs-cats-redux-data/*.zip .
 
 # unzip into test / train directories and delete zip-files
 echo Unzipping ...
 unzip -q test.zip
+mv test_stg1 test
 unzip -q train.zip
 rm -vi test.zip
 rm -vi train.zip
@@ -109,46 +109,52 @@ rm -vi train.zip
 mkdir test/unknown
 mv test/*.jpg test/unknown/
 
+# move training data into separate directories according to class
+
 # create directory structure
 echo Creating directory structure ...
 mkdir -v valid
-mkdir -v valid/cats
-mkdir -v valid/dogs
-
 mkdir -v sample
 mkdir -v sample/train
-mkdir -v sample/train/cats
-mkdir -v sample/train/dogs
 mkdir -v sample/valid
-mkdir -v sample/valid/cats
-mkdir -v sample/valid/dogs
 
-mkdir -v train/cats
-mkdir -v train/dogs
-
-# move training data into separate directories according to class
-mv train/cat*.jpg train/cats/
-mv train/dog*.jpg train/dogs/
+find train/ -type d | tail -n +2 | cut -c7- > dirs.txt
+cd valid
+xargs mkdir -p < ../dirs.txt
+cd ..
+cd sample/train
+xargs mkdir -p < ../../dirs.txt
+cd ../..
+cd sample/valid
+xargs mkdir -p < ../../dirs.txt
+cd ../..
 
 # move a set of validation data to validation directories
-mv_rand train/cats/ $validSz valid/cats/
-mv_rand train/dogs/ $validSz valid/dogs/
+for i in `cat dirs.txt`
+do
+    mv_rand train/$i/ $validSz valid/$i/
+done
+echo -ne '\n'
 
 # copy a small set of data to sample directories
-cp_rand train/cats/ $sampleSz sample/train/cats/
-cp_rand train/dogs/ $sampleSz sample/train/dogs/
+for i in `cat dirs.txt`
+do
+    cp_rand train/$i/ $sampleSz sample/train/$i/
+done
+echo -ne '\n'
 
-cp_rand valid/cats/ $sampleSz sample/valid/cats/
-cp_rand valid/dogs/ $sampleSz sample/valid/dogs/
+for i in `cat dirs.txt`
+do
+    cp_rand valid/$i/ $sampleSz sample/valid/$i/
+done
+echo -ne '\n'
 
 # print results
-echo "train/cats/:" `ls train/cats/ | wc -l`
-echo "valid/cats/:" `ls valid/cats/ | wc -l`
-echo "train/dogs/:" `ls train/dogs/ | wc -l`
-echo "valid/dogs/:" `ls valid/dogs/ | wc -l`
-
-echo "sample/train/cats/:" `ls sample/train/cats/ | wc -l`
-echo "sample/train/dogs/:" `ls sample/train/dogs/ | wc -l`
-echo "sample/valid/cats/:" `ls sample/valid/cats/ | wc -l`
-echo "sample/valid/dogs/:" `ls sample/valid/dogs/ | wc -l`
-
+echo -ne '\n'
+for i in `cat dirs.txt`
+do
+    echo train/$i ": " `ls train/$i | wc -l`
+    echo valid/$i ": " `ls valid/$i | wc -l`
+    echo sample/train/$i ": " `ls sample/train/$i | wc -l`
+    echo sample/valid/$i ": " `ls sample/valid/$i | wc -l`
+done
