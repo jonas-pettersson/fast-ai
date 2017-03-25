@@ -98,18 +98,46 @@ case $doit in
 esac
 
 # unzip into test / train directories and delete zip-files
-echo Unzipping ...
-unzip -q test.zip
-mv test_stg1 test
-unzip -q train.zip
-rm -vi test.zip
-rm -vi train.zip
+read -n1 -p "Unzip? [y,n]" doit
+case $doit in
+    y|Y)
+	echo
+	echo Unzipping ...
+	unzip -q test.zip
+	# mv test_stg1 test
+	unzip -q train.zip
+	rm -vi test.zip
+	rm -vi train.zip
+	;;
+    n|N) echo ;;
+    *) echo ;;
+esac
 
 # move all test pics into a subdirectory
-mkdir test/unknown
-mv test/*.jpg test/unknown/
+read -n1 -p "Move test files to directory unknown? [y,n]" doit
+case $doit in
+    y|Y)
+	echo
+	mkdir test/unknown
+	mv test/*.jpg test/unknown/
+	;;
+    n|N) echo ;;
+    *) echo ;;
+esac
 
 # move training data into separate directories according to class
+read -n1 -p "Move cats and dogs original files to subdirectories? [y,n]" doit
+case $doit in
+    y|Y)
+	echo
+	mkdir -v train/cats
+	mkdir -v train/dogs
+	mv train/cat*.jpg train/cats/
+	mv train/dog*.jpg train/dogs/
+	;;
+    n|N) echo ;;
+    *) echo ;;
+esac
 
 # create directory structure
 echo Creating directory structure ...
