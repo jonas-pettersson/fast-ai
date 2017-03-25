@@ -54,9 +54,9 @@ aws ec2 terminate-instances --instance-ids $AWS_INSTANCE_ID
 echo "Waiting for AWS Spot Instance to terminate"
 aws ec2 wait instance-terminated --instance-ids $AWS_INSTANCE_ID
 
-echo "Deleting AWS Volume" $AWS_VOLUME_ID
-aws ec2 delete-volume --volume-id $AWS_VOLUME_ID
-echo "Waiting for AWS Volume to be deleted" $AWS_VOLUME_ID
-aws ec2 wait volume-deleted --volume-ids $AWS_VOLUME_ID
+# echo "Deleting AWS Volume" $AWS_VOLUME_ID
+# aws ec2 delete-volume --volume-id $AWS_VOLUME_ID
+# echo "Waiting for AWS Volume to be deleted" $AWS_VOLUME_ID
+# aws ec2 wait volume-deleted --volume-ids $AWS_VOLUME_ID
 
 rm -vi .aws_spot_profile
