@@ -3,7 +3,7 @@
   "InstanceType": "p2.xlarge",
   "KeyName": "aws-key",
   "Placement": {
-	"AvailabilityZone": "eu-west-1c"
+	"AvailabilityZone": "us-west-2b"
   },
   "BlockDeviceMappings": [
 	{
@@ -16,5 +16,5 @@
 	  }
 	}
   ],
-  "SecurityGroupIds": ["sg-442bc22b"]
+  "SecurityGroupIds": ["sg-7ebd5511"]
 }

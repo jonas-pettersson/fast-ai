@@ -1,7 +1,7 @@
 {
-  "ImageId": "ami-b7a114d7",
+  "ImageId": "ami-405f7226",
   "InstanceType": "p2.xlarge",
-  "KeyName": "aws-key",
+  "KeyName": "aws-key-eu",
   "Placement": {
 	"AvailabilityZone": "eu-west-1c"
   },
@@ -9,10 +9,10 @@
 	{
 	  "DeviceName": "/dev/sda1",
 	  "Ebs": {
-		"DeleteOnTermination": false,
+		"DeleteOnTermination": true,
 		"VolumeType": "gp2",
 		"VolumeSize": 8,
-		"SnapshotId": "snap-b7ae1993"
+		"SnapshotId": "snap-072cbf08f28b337b9"
 	  }
 	}
   ],

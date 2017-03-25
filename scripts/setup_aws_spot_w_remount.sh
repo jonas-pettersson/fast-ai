@@ -14,8 +14,10 @@
 #
 #    PREREQUISITES:
 #    - there exists an aws volume named as AWS_ROOT_VOL_NAME below
-#    - configure specification.json to meet your needs
+#    - configure specification.json to meet your needs and set the
+#      corresponding file name in AWS_CONF_FILE variable
 #    - set AWS_MAX_SPOT_PRICE below
+#    - set AWS_PEM_KEY to your ssh key file
 #    - spot instance OS must match volume OS
 #
 #    PLEASE NOTE:
@@ -42,8 +44,11 @@ echo "AWS_MAX_SPOT_PRICE="${AWS_MAX_SPOT_PRICE}
 
 # launch-specification file with JSON syntax described here:
 # http://docs.aws.amazon.com/cli/latest/reference/ec2/request-spot-instances.html
-AWS_CONF_FILE="file://specification.json"
+AWS_CONF_FILE="file://specification_eu.json"
 echo "AWS_CONF_FILE="${AWS_CONF_FILE}
+
+AWS_PEM_KEY="aws-key-eu.pem"
+echo "AWS_PEM_KEY="${AWS_PEM_KEY}
 
 # Fetch AWS Volume ID
 AWS_ROOT_VOLUME_ID=`aws ec2 describe-volumes --filters Name=tag-key,Values="Name" Name=tag-value,Values="$AWS_ROOT_VOL_NAME" --query="Volumes[*].VolumeId" --output="text"`
@@ -105,11 +110,11 @@ else
 fi
 
 echo "Fething remount-script to new AWS Instance"
-ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS "wget https://raw.githubusercontent.com/jonas-pettersson/fast-ai/master/scripts/remount_root.sh"
-ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS "chmod +x ~/remount_root.sh"
+ssh -i ~/.ssh/$AWS_PEM_KEY ubuntu@$AWS_INSTANCE_PUBLIC_DNS "wget https://raw.githubusercontent.com/jonas-pettersson/fast-ai/master/scripts/remount_root.sh"
+ssh -i ~/.ssh/$AWS_PEM_KEY ubuntu@$AWS_INSTANCE_PUBLIC_DNS "chmod +x ~/remount_root.sh"
 
 echo "Executing remount-script on new AWS Instance"
-ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS "sudo ~/remount_root.sh"
+ssh -i ~/.ssh/$AWS_PEM_KEY ubuntu@$AWS_INSTANCE_PUBLIC_DNS "sudo ~/remount_root.sh"
 
 echo "Waiting for AWS Spot Instance to reboot"
 aws ec2 wait instance-status-ok --instance-ids $AWS_INSTANCE_ID
@@ -120,7 +125,7 @@ ssh-keygen -R $AWS_INSTANCE_PUBLIC_DNS
 
 echo "Please give the AWS Instance some time (~30 sec) to get initialized after reboot"
 echo "Then login using following command:"
-echo "ssh -i ~/.ssh/aws-key.pem ubuntu@$AWS_INSTANCE_PUBLIC_DNS"
+echo "ssh -i ~/.ssh/$AWS_PEM_KEY ubuntu@$AWS_INSTANCE_PUBLIC_DNS"
 
 cat > .aws_spot_profile << EOF11
 AWS_SPOT_REQUEST_ID=${AWS_SPOT_REQUEST_ID}
