@@ -9,7 +9,7 @@ if [ $# -ne 2 ]
 then
     echo usage: $0 filenames predictions
     exit 1
-elif ! [ -f $1 & -f $2 ]
+elif ! [ -f $1 ] || ! [ -f $2 ]
 then
     echo $1 or $2 is not a valid filename
     echo usage: $0 filenames predictions
