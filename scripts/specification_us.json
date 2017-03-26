@@ -9,7 +9,7 @@
 	{
 	  "DeviceName": "/dev/sda1",
 	  "Ebs": {
-		"DeleteOnTermination": false,
+		"DeleteOnTermination": true,
 		"VolumeType": "gp2",
 		"VolumeSize": 8,
 		"SnapshotId": "snap-b7ae1993"
