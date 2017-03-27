@@ -21,10 +21,9 @@ fi
 
 cut -f2 -d'/' $FILE_NAMES | cut -f1 -d'.' > filenames_clean.csv
 sed -r 's/\s+//g' $PREDICTS > predicts_clean.csv
-paste -d',' filenames_clean.csv predicts_clean.csv > submission_tmp.csv
-#echo "id,label" > submission.csv
-sort -t',' -n submission_tmp.csv > submission.csv
-rm -i submission_tmp.csv
-rm -i filenames_clean.csv
-rm -i predicts_clean.csv
+echo "id,label" > submission.csv
+paste -d',' filenames_clean.csv predicts_clean.csv | sort -t',' -n >> submission.csv
+rm -f submission_tmp.csv
+rm -f filenames_clean.csv
+rm -f predicts_clean.csv
 head submission.csv
