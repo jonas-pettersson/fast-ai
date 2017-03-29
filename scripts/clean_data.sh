@@ -19,7 +19,7 @@ else
     PREDICTS=$2
 fi
 
-cut -f2 -d'/' $FILE_NAMES | cut -f1 -d'.' > filenames_clean.csv
+cut -f2 -d'/' $FILE_NAMES > filenames_clean.csv
 sed -r 's/\s+//g' $PREDICTS > predicts_clean.csv
 # echo "id,label" > submission.csv
 paste -d',' filenames_clean.csv predicts_clean.csv | sort -t',' -n > submission.csv
