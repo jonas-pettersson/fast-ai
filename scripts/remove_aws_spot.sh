@@ -6,8 +6,7 @@
 #    USAGE: ./remove_aws_spot.sh
 #
 #    DESCRIPTION: cancels the spot request,
-#                 terminates the instance, and
-#                 deletes the volume
+#                 and terminates the instance
 #
 #    PREREQUISITES:
 #    - AWS_SPOT_REQUEST_ID, AWS_INSTANCE_ID, AWS_VOLUME_ID saved
